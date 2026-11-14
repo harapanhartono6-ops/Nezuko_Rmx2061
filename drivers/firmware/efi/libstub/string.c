@@ -57,11 +57,13 @@ int strncmp(const char *cs, const char *ct, size_t count)
 }
 #endif
 
-#ifndef __HAVE_ARCH_STRRCHR
 /**
  * strrchr - Find the last occurrence of a character in a string
  * @s: The string to be searched
  * @c: The character to search for
+ *
+ * Always built here: arm64 defines __HAVE_ARCH_STRRCHR, which would skip
+ * this fallback and leave __efistub_strrchr undefined.
  */
 char *strrchr(const char *s, int c)
 {
@@ -72,4 +74,3 @@ char *strrchr(const char *s, int c)
 	} while (*s++);
 	return (char *)last;
 }
-#endif

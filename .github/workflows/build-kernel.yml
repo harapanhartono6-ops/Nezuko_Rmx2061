@@ -100,8 +100,7 @@ jobs:
     - name: Integrate BakaSU kernel module
       run: |
         echo "Setting up BakaSU kernel module..."
-        cp -r ~/BakaSU/kernel BakaSU
-        ln -sf ../BakaSU drivers/bakasu
+        # Sources are committed in drivers/bakasu; do not overwrite them here
         
         # Patch drivers/Makefile
         if ! grep -q "obj-\$(CONFIG_BAKASU) += bakasu/" drivers/Makefile; then
@@ -117,26 +116,7 @@ jobs:
         
     - name: Integrate SUSFS
       run: |
-        echo "Setting up SUSFS..."
-        cp ~/susfs4ksu/kernel_patches/fs/susfs.c fs/
-        cp ~/susfs4ksu/kernel_patches/include/linux/susfs.h include/linux/
-        
-        # Apply SUSFS kernel patch
-        echo "Applying SUSFS 4.14 patch..."
-        patch -p1 < ~/susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.14.patch || echo "Patch applied with warnings"
-        
-        # Apply SUSFS to BakaSU
-        cd BakaSU
-        patch -p1 < ~/susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch || echo "BakaSU SUSFS patch applied with warnings"
-        cd ..
-        
-        echo "SUSFS integrated successfully"
-        
-    - name: Apply runtime patches
-      run: |
-        echo "Applying patches AFTER SUSFS integration..."
-        chmod +x .github/scripts/apply-fixes.sh
-        ./.github/scripts/apply-fixes.sh
+        echo "SUSFS sources are committed (fs/susfs.c, include/linux/susfs.h); nothing to copy"
         
     - name: Update defconfig
       run: |
